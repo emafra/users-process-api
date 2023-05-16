@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="8a8d8c57-9182-41ba-80f4-cedb8d589786" file="properties-${env}.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="9b74b90d-4506-43bf-8d13-5551247bed7a" file="properties.yaml" />
+	<http:request-config name="File_System_API" doc:name="HTTP Request configuration" doc:id="080a120d-2ae4-44c6-bd58-c5f5e98ef002" >
+		<http:request-connection host="${fileSystemAPI.http.host}" port="${fileSystemAPI.http.port}" />
+	</http:request-config>
+	<http:request-config name="Database_System_API" doc:name="HTTP Request configuration" doc:id="ed503746-5502-4a2b-b76f-974b6f689bb3" >
+		<http:request-connection host="${databaseSystemAPI.http.host}" port="${databaseSystemAPI.http.port}" />
+	</http:request-config>
+	<global-property doc:name="Global Property" doc:id="620a8c7a-4122-4794-8da8-8ea28c80e134" name="env" value="local" />
+	<api-gateway:autodiscovery apiId="${apiId}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="516dc033-dbf5-44d3-bfba-ea135dfd7f5e" flowRef="users-process-api-main" />
+</mule>

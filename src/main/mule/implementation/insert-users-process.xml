@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="insertUsersMainFlow" doc:id="2ab47209-4cda-47ba-9b2d-4d5acd96ef1b" >
+		<logger level="INFO" doc:name="Before Get Users" doc:id="d172bd51-d863-4a87-a303-989e6763d6ea" message="Before Get Users"/>
+		<http:request method="GET" doc:name="Get Users from CSV File" doc:id="2a00db82-5f5f-4a3a-9694-5d16279c95e6" config-ref="File_System_API" path="/file-system-api/v1/api/users/csv" sendCorrelationId="ALWAYS">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	Authorization: Mule::p('fileSystemAPI.headers.authorization')
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="After Get Users" doc:id="2899f739-3abe-4e66-b033-0ed3fc9b7e74" message="After Get Users"/>
+		<logger level="INFO" doc:name="Before Insert Users at Users Database" doc:id="ef03e313-5782-4ff8-9def-4e31d215c2df" message="Before Insert Users at Users Database"/>
+		<http:request method="POST" doc:name="Insert Users at Users Database" doc:id="803c2b15-7729-408b-8d9e-79e2a772520a" config-ref="Database_System_API" path="/database-system-api/v1/api/users">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	Authorization: Mule::p('databaseSystemAPI.header.authorization')
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="After Insert Users at Users Database" doc:id="95d614e2-a73c-4507-b0f3-7d65efdd49bc" message="After Insert Users at Users Database"/>
+		<logger level="INFO" doc:name="Logger" doc:id="2fc0efa3-b527-4a79-b366-73db6667587f" message="#[payload]"/>
+		<choice doc:name="Choice" doc:id="1d89b5d5-607f-4ed4-9965-f868ef310aad" >
+			<when expression="#[sizeOf(payload.duplicatedUsersFailure) &gt;= 0]">
+				<logger level="INFO" doc:name="Some users already exist at the Users Database" doc:id="a571a7f9-ea6a-401a-9e98-48fbf7086e7f" message="Some users already exist at the Users Database"/>
+				<raise-error doc:name="Users partially created" doc:id="6280964b-6d78-4fb4-aa0f-97a4953bc1e5" type="USERS:MULTI-STATUS" description="Users partially created"/>
+			</when>
+		</choice>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="867a178d-5920-4c91-830f-6bf9cff4c055" type="USERS:MULTI-STATUS">
+				<set-variable value="207" doc:name="Http 207 Response" doc:id="a8ffb094-c37f-4f9b-b078-6dd894d6d21b" variableName="httpStatus"/>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>
