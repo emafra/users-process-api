@@ -16,13 +16,13 @@ output application/json
   users: payload.xml.users.*user map {
     id: $.id,
     name: $.name,
-    age: $.age
+    age: $.age as Number
   }
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Before Send Json" doc:id="22bc3af6-aff2-4b54-a833-f0bc9c55f22f" message="Before Send Json" />
-		<http:request method="GET" doc:name="File System API" doc:id="38060dce-57fd-44a3-9ca2-33ab2348e3ff" config-ref="File_System_API" path="/file-system-api/v1/api/users/json">
+		<http:request method="POST" doc:name="File System API" doc:id="38060dce-57fd-44a3-9ca2-33ab2348e3ff" config-ref="File_System_API" path="/file-system-api/v1/api/users/json">
 			<http:headers ><![CDATA[#[output application/java
 ---
 {
