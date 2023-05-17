@@ -2,8 +2,8 @@ fileSystemAPI:
   http:
     host: "localhost"
     port: "8081"
-    header:
-      Authorization: "Basic YWVWTjYzMiVaMGhXOjZyOGUmbjR4N1Y4Qg=="
+  header:
+    authorization: "Basic YWVWTjYzMiVaMGhXOjZyOGUmbjR4N1Y4Qg=="
 
 databaseSystemAPI:
   http:

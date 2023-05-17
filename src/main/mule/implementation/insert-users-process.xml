@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 			<http:headers ><![CDATA[#[output application/java
 ---
 {
-	Authorization: Mule::p('fileSystemAPI.headers.authorization')
+	Authorization: Mule::p('fileSystemAPI.header.authorization')
 }]]]></http:headers>
 		</http:request>
 		<logger level="INFO" doc:name="After Get Users" doc:id="2899f739-3abe-4e66-b033-0ed3fc9b7e74" message="After Get Users"/>

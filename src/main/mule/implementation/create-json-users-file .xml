@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="createJsonUsersFileFlow" doc:id="fc1e0057-ff63-420c-af53-2f3d1fb7c898" >
+		<ee:transform doc:name="XML to Json" doc:id="5f35edcc-0cd9-4814-adb0-11db7eabfe5e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  fileName: payload.xml.fileName,
+  users: payload.xml.users.*user map {
+    id: $.id,
+    name: $.name,
+    age: $.age
+  }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Before Send Json" doc:id="22bc3af6-aff2-4b54-a833-f0bc9c55f22f" message="Before Send Json" />
+		<http:request method="GET" doc:name="File System API" doc:id="38060dce-57fd-44a3-9ca2-33ab2348e3ff" config-ref="File_System_API" path="/file-system-api/v1/api/users/json">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	Authorization: Mule::p('fileSystemAPI.header.authorization')
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="After Send Json" doc:id="0cf87bc6-8f42-427c-9b6e-f4f7de9e8a9c" message="After Send Json"/>
+	</flow>
+</mule>

@@ -3,7 +3,7 @@
     <http:listener-config name="users-process-api-httpListenerConfig" basePath="${http.basePath}">
         <http:listener-connection host="0.0.0.0" port="${http.port}" />
     </http:listener-config>
-    <apikit:config name="users-process-api-config" api="resource::c4eeb2a1-5649-4d63-bacd-2f923544a273:users-process-api:1.0.2:raml:zip:users-process-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="users-process-api-config" api="resource::c4eeb2a1-5649-4d63-bacd-2f923544a273:users-process-api:1.0.5:raml:zip:users-process-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="users-process-api-main">
         <http:listener config-ref="users-process-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -123,9 +123,14 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="post:\users:users-process-api-config">
-        <logger level="INFO" doc:name="Starting User Insertion Process" doc:id="7bcae5db-38b1-426a-bc29-4d870df0c141" message="Starting User Insertion Process"/>
-		<flow-ref doc:name="Insert Users Main Flow" doc:id="29d14052-3988-4a44-a081-a06f7f1c26c6" name="insertUsersMainFlow" />
-		<logger level="INFO" doc:name="User Insertion Process Ended" doc:id="e9838ad3-4d97-4987-aa4d-408b9b19d557" message="User Insertion Process Ended"/>
+    <flow name="post:\users\q1:users-process-api-config">
+        <logger level="INFO" doc:name="Starting User Insertion Process" doc:id="7bcae5db-38b1-426a-bc29-4d870df0c141" message="Starting User Insertion Process" />
+        <flow-ref doc:name="Insert Users" doc:id="29d14052-3988-4a44-a081-a06f7f1c26c6" name="insertUsersMainFlow" />
+        <logger level="INFO" doc:name="User Insertion Process Ended" doc:id="e9838ad3-4d97-4987-aa4d-408b9b19d557" message="User Insertion Process Ended" />
+    </flow>
+    <flow name="post:\users\q2:application\xml:users-process-api-config">
+        <logger level="INFO" doc:name="Starting User Insertion Process" doc:id="10f5217e-0d60-4dcf-8868-c9cadd833837" message="Starting Users File Creation" />
+        <flow-ref doc:name="create Json Users File" doc:id="5aef9eaa-7e3a-4739-9b72-8cd94cc6a83f" name="createJsonUsersFileFlow" />
+        <logger level="INFO" doc:name="Users File Creation Ended" doc:id="8071dccf-bb03-43a6-b1be-a1e32677406a" message="Users File Creation Ended" />
     </flow>
 </mule>
